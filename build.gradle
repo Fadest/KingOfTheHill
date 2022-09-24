@@ -1,0 +1,29 @@
+plugins {
+    id 'java'
+}
+
+group 'dev.fadest'
+version '1.0-SNAPSHOT'
+
+compileJava {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+    options.encoding = "UTF-8"
+}
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        name = "spigot-repo"
+        url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+    }
+}
+
+dependencies {
+    implementation group: 'org.spigotmc', name: 'spigot', version: '1.8.8-R0.1-SNAPSHOT'
+
+    implementation group: 'org.jetbrains', name: 'annotations', version: '23.0.0'
+    implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+}
