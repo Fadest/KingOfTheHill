@@ -623,7 +623,7 @@ public class KOTHCommand implements CommandExecutor, TabCompleter {
         }
 
         if (sender.hasPermission("koth.schedule")) {
-            sender.sendMessage(StringUtilities.color("&c/&fkoth schedule <name> <time> (-add) &7- Schedule a game to run"));
+            sender.sendMessage(StringUtilities.color("&c/&fkoth schedule <name> <time> (-add) &7- Schedule a game"));
         }
 
         if (sender.hasPermission("koth.cancel")) {
@@ -631,7 +631,7 @@ public class KOTHCommand implements CommandExecutor, TabCompleter {
         }
 
         if (sender.hasPermission("koth.stop")) {
-            sender.sendMessage(StringUtilities.color("&c/&fkoth stop <name> &7- Stops an started game"));
+            sender.sendMessage(StringUtilities.color("&c/&fkoth stop <name> &7- Stops a started game"));
         }
 
         if (sender.hasPermission("koth.create")) {
@@ -643,7 +643,7 @@ public class KOTHCommand implements CommandExecutor, TabCompleter {
         }
 
         if (sender.hasPermission("koth.edit")) {
-            sender.sendMessage(StringUtilities.color("&c/&fkoth edit <name> <world/rewards/capture_zone/global_zone/duration> &7 - Edit the specified game"));
+            sender.sendMessage(StringUtilities.color("&c/&fkoth edit <name> <world/rewards/min_rewards/max_rewards/capture_zone/global_zone/duration> &7 - Edit the specified game"));
         }
     }
 
