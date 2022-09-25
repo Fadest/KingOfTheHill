@@ -7,7 +7,7 @@ import dev.fadest.koth.game.loader.GameFactory;
 import dev.fadest.koth.game.reward.menu.RewardMainMenu;
 import dev.fadest.koth.game.state.State;
 import dev.fadest.koth.utils.BoundingBox;
-import dev.fadest.koth.utils.Utilities;
+import dev.fadest.koth.utils.StringUtilities;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
@@ -44,57 +44,57 @@ public class KOTHCommand implements CommandExecutor, TabCompleter {
         switch (args[0].toLowerCase(Locale.ROOT)) {
             case "schedule": {
                 if (!sender.hasPermission("koth.schedule")) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fYou don't have enough permissions to use this command."));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fYou don't have enough permissions to use this command."));
                     return true;
                 }
 
                 if (args.length < 2) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fYou need to specify a game in order to start it."));
-                    sender.sendMessage(Utilities.color("&fCorrect Usage: &7/koth schedule <name> <time> (-add)"));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fYou need to specify a game in order to start it."));
+                    sender.sendMessage(StringUtilities.color("&fCorrect Usage: &7/koth schedule <name> <time> (-add)"));
                     return true;
                 }
 
                 String name = args[1];
                 Optional<Game> gameOptional = gameManager.getGameFromName(name);
                 if (!gameOptional.isPresent()) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fCouldn't find game with the name &c" + name + "&f."));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fCouldn't find game with the name &c" + name + "&f."));
                     return true;
                 }
 
                 Game game = gameOptional.get();
                 if (game.getState() == State.IN_GAME) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fThe game &c" + name + " &fhas already started."));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fThe game &c" + name + " &fhas already started."));
                     return true;
                 }
 
                 if (game.getState() != State.STARTING) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fThe game &c" + name + " &fis not yet prepared."));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fThe game &c" + name + " &fis not yet prepared."));
                     return true;
                 }
 
                 if (game.getWorldName() == null || game.getWorld() == null) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fThe game &c" + name + " &fhas an invalid world."));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fThe game &c" + name + " &fhas an invalid world."));
                     return true;
                 }
 
                 if (game.getCaptureZoneBoundingBox() == null) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fThe game &c" + name + " &fdoesn't contains a capture zone."));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fThe game &c" + name + " &fdoesn't contains a capture zone."));
                     return true;
                 }
 
                 if (game.getGlobalBoundingBox() == null) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fThe game &c" + name + " &fdoesn't contains a global zone."));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fThe game &c" + name + " &fdoesn't contains a global zone."));
                     return true;
                 }
 
-                if (game.getGameSeconds() == 0) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fThe game &c" + name + " &fdoesn't have a setup duration."));
+                if (game.getGameDuration() == 0) {
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fThe game &c" + name + " &fdoesn't have a setup duration."));
                     return true;
                 }
 
                 if (args.length < 3) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fYou need to specify a time to schedule the game."));
-                    sender.sendMessage(Utilities.color("&fExamples: &c05:10&f, &c0:15&f, &c100"));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fYou need to specify a time to schedule the game."));
+                    sender.sendMessage(StringUtilities.color("&fExamples: &c05:10&f, &c0:15&f, &c100"));
                     return true;
                 }
 
@@ -111,8 +111,8 @@ public class KOTHCommand implements CommandExecutor, TabCompleter {
                     boolean add = args.length > 3 && args[3].equalsIgnoreCase("-add");
 
                     if (timeSplit.length == 1) {
-                        sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fYou need to input a proper format."));
-                        sender.sendMessage(Utilities.color("&fExamples: &c05:10&f, &c0:15"));
+                        sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fYou need to input a proper format."));
+                        sender.sendMessage(StringUtilities.color("&fExamples: &c05:10&f, &c0:15"));
                         return true;
                     }
 
@@ -126,15 +126,15 @@ public class KOTHCommand implements CommandExecutor, TabCompleter {
                             expectedTime = expectedTime.withHour(hours).withMinute(minutes);
                         }
                     } catch (NumberFormatException e1) {
-                        sender.sendMessage(Utilities.color("&4✕&c&lKOTH &r&c❙ &fYou need to input a proper format."));
-                        sender.sendMessage(Utilities.color("&fExamples: &c05:10&f, &c0:15"));
+                        sender.sendMessage(StringUtilities.color("&4✕&c&lKOTH &r&c❙ &fYou need to input a proper format."));
+                        sender.sendMessage(StringUtilities.color("&fExamples: &c05:10&f, &c0:15"));
                         return true;
                     }
                 }
 
                 LocalDateTime currentTime = LocalDateTime.now();
                 if (expectedTime.isBefore(currentTime)) {
-                    sender.sendMessage(Utilities.color(
+                    sender.sendMessage(StringUtilities.color(
                             String.format(
                                     "&4✕ &c&lKOTH &r&7❙ &fYou tried to schedule a game to the past &7(&c%s&7)&f. Current Time is &c%s",
                                     expectedTime.getHour() + ":" + expectedTime.getMinute(),
@@ -147,12 +147,12 @@ public class KOTHCommand implements CommandExecutor, TabCompleter {
                 game.getGameRunnable().setStartedCounter(false);
 
                 game.setDateOfNextStart(expectedTime);
-                sender.sendMessage(Utilities.color(
+                sender.sendMessage(StringUtilities.color(
                         String.format(
                                 "&2✔ &a&lKOTH &r&7❙ &fYou have scheduled the game &a%s &fto start at &a%s&7. &a%s &fremaining.",
                                 game.getName(),
                                 expectedTime.getHour() + ":" + expectedTime.getMinute(),
-                                Utilities.formatRemainingTime(currentTime.until(expectedTime, ChronoUnit.MILLIS))
+                                StringUtilities.formatRemainingTime(currentTime.until(expectedTime, ChronoUnit.MILLIS))
                         )
                 ));
                 break;
@@ -160,12 +160,12 @@ public class KOTHCommand implements CommandExecutor, TabCompleter {
             case "list": {
                 Set<Game> games = gameManager.getGames();
                 if (games.isEmpty()) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fThere aren't any games loaded"));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fThere aren't any games loaded"));
                     return true;
                 }
 
                 if (!sender.hasPermission("koth.list.all") && games.stream().noneMatch(game -> game.getDateOfNextStart() != null)) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fThere aren't any scheduled games."));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fThere aren't any scheduled games."));
                     return true;
                 }
 
@@ -181,74 +181,74 @@ public class KOTHCommand implements CommandExecutor, TabCompleter {
                 boolean hasPermission = sender.hasPermission("koth.list.all");
                 long totalGames = hasPermission ? sortedGames.size() : sortedGames.stream().filter(game -> game.getDateOfNextStart() != null).count();
                 if (totalGames == 0) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fThere aren't any games."));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fThere aren't any games."));
                     return true;
                 }
 
-                sender.sendMessage(Utilities.color("&c&lKOTH &r&7❙ &fGames: &e" + totalGames + "&f."));
+                sender.sendMessage(StringUtilities.color("&c&lKOTH &r&7❙ &fGames: &e" + totalGames + "&f."));
 
                 LocalDateTime currentTime = LocalDateTime.now();
                 for (Game game : sortedGames) {
                     if (game.getState() == State.IN_GAME) {
-                        sender.sendMessage(Utilities.color(String.format(
+                        sender.sendMessage(StringUtilities.color(String.format(
                                 "&a" + game.getName() + " &7(&eSTARTED &7[&e%s left&7])",
-                                Utilities.formatTimeMinutesAndSeconds(game.getGameRunnable().getCountdown().get()))));
+                                StringUtilities.formatTimeMinutesAndSeconds(game.getGameRunnable().getCountdown().get()))));
                         continue;
                     }
 
                     if (!hasPermission) continue;
 
                     if (game.getDateOfNextStart() == null) {
-                        sender.sendMessage(Utilities.color("&7" + game.getName() + " (INACTIVE)"));
+                        sender.sendMessage(StringUtilities.color("&7" + game.getName() + " (INACTIVE)"));
                         continue;
                     }
 
-                    sender.sendMessage(Utilities.color(String.format("&a" + game.getName() + " &7[&e%s&7]",
-                            Utilities.formatRemainingTime(currentTime.until(game.getDateOfNextStart(), ChronoUnit.MILLIS)))));
+                    sender.sendMessage(StringUtilities.color(String.format("&a" + game.getName() + " &7[&e%s&7]",
+                            StringUtilities.formatRemainingTime(currentTime.until(game.getDateOfNextStart(), ChronoUnit.MILLIS)))));
                 }
                 break;
             }
             case "info": {
                 if (!sender.hasPermission("koth.info")) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fYou don't have enough permissions to use this command."));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fYou don't have enough permissions to use this command."));
                     return true;
                 }
 
                 if (args.length < 2) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fYou need to specify a game in order to get the information of it."));
-                    sender.sendMessage(Utilities.color("&fCorrect Usage: &7/koth info <name>"));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fYou need to specify a game in order to get the information of it."));
+                    sender.sendMessage(StringUtilities.color("&fCorrect Usage: &7/koth info <name>"));
                     return true;
                 }
 
                 String name = args[1];
                 Optional<Game> gameOptional = gameManager.getGameFromName(name);
                 if (!gameOptional.isPresent()) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fCouldn't find game with the name &c" + name + "&f."));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fCouldn't find game with the name &c" + name + "&f."));
                     return true;
                 }
 
                 Game game = gameOptional.get();
-                sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fInformation about &c" + name + "&f:"));
-                sender.sendMessage(Utilities.color("&f• &cWorld Name: &f" + (game.getWorldName() == null ? "&eNot setup" : game.getWorldName())));
-                sender.sendMessage(Utilities.color("&f• &cFile: &f" + game.getGameFileName()));
-                sender.sendMessage(Utilities.color("&f• &cState: &f" + game.getState().name()));
-                sender.sendMessage(Utilities.color("&f• &cRewards: &f" + game.getRewards().size()));
-                sender.sendMessage(Utilities.color("&f• &cMinimum Rewards: &f" + game.getMinRewards()));
-                sender.sendMessage(Utilities.color("&f• &cMaximum Rewards: &f" + game.getMaxRewards()));
-                sender.sendMessage(Utilities.color("&f• &cGame Duration (in seconds): &f" + game.getGameSeconds()));
+                sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fInformation about &c" + name + "&f:"));
+                sender.sendMessage(StringUtilities.color("&f• &cWorld Name: &f" + (game.getWorldName() == null ? "&eNot setup" : game.getWorldName())));
+                sender.sendMessage(StringUtilities.color("&f• &cFile: &f" + game.getGameFileName()));
+                sender.sendMessage(StringUtilities.color("&f• &cState: &f" + game.getState().name()));
+                sender.sendMessage(StringUtilities.color("&f• &cRewards: &f" + game.getRewards().size()));
+                sender.sendMessage(StringUtilities.color("&f• &cMinimum Rewards: &f" + game.getMinRewards()));
+                sender.sendMessage(StringUtilities.color("&f• &cMaximum Rewards: &f" + game.getMaxRewards()));
+                sender.sendMessage(StringUtilities.color("&f• &cGame Duration (in seconds): &f" + game.getGameDuration()));
                 final LocalDateTime currentTime = LocalDateTime.now();
                 if (game.getDateOfNextStart() != null && game.getDateOfNextStart().isAfter(currentTime)) {
-                    sender.sendMessage(Utilities.color("&f• &cNext game: &f" +
-                            Utilities.formatRemainingTime(currentTime.until(game.getDateOfNextStart(), ChronoUnit.MILLIS))));
+                    sender.sendMessage(StringUtilities.color("&f• &cNext game: &f" +
+                            StringUtilities.formatRemainingTime(currentTime.until(game.getDateOfNextStart(), ChronoUnit.MILLIS))));
                 }
                 if (game.getState() == State.IN_GAME) {
-                    sender.sendMessage(Utilities.color("&f• &cEnds in: &f" +
-                            Utilities.formatRemainingTime(TimeUnit.SECONDS.toMillis(game.getGameRunnable().getCountdown().get()))));
+                    sender.sendMessage(StringUtilities.color("&f• &cEnds in: &f" +
+                            StringUtilities.formatRemainingTime(TimeUnit.SECONDS.toMillis(game.getGameRunnable().getCountdown().get()))));
                 }
 
                 BoundingBox globalBoundingBox = game.getGlobalBoundingBox();
 
-                sender.sendMessage(Utilities.color("&f• &cGlobal Area: " + (game.getGlobalBoundingBox() == null ? "&eNot setup" :
+                sender.sendMessage(StringUtilities.color("&f• &cGlobal Area: " + (game.getGlobalBoundingBox() == null ? "&eNot setup" :
                         String.format(
                                 "&ffrom &7(&f%.0f %.0f %.0f&7) &fto &7(&f%.0f %.0f %.0f&7)",
                                 globalBoundingBox.getMinX(),
@@ -262,7 +262,7 @@ public class KOTHCommand implements CommandExecutor, TabCompleter {
 
                 BoundingBox captureZoneBoundingBox = game.getCaptureZoneBoundingBox();
 
-                sender.sendMessage(Utilities.color("&f• &cCapture Zone Area: " + (game.getCaptureZoneBoundingBox() == null ? "&eNot setup" :
+                sender.sendMessage(StringUtilities.color("&f• &cCapture Zone Area: " + (game.getCaptureZoneBoundingBox() == null ? "&eNot setup" :
                         String.format(
                                 "&ffrom &7(&f%.0f %.0f %.0f&7) &fto &7(&f%.0f %.0f %.0f&7)",
                                 captureZoneBoundingBox.getMinX(),
@@ -280,20 +280,20 @@ public class KOTHCommand implements CommandExecutor, TabCompleter {
             case "c":
             case "new": {
                 if (!sender.hasPermission("koth.create")) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fYou don't have enough permissions to use this command."));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fYou don't have enough permissions to use this command."));
                     return true;
                 }
 
                 if (args.length < 2) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fYou need to specify a name in order to create it."));
-                    sender.sendMessage(Utilities.color("&fCorrect Usage: &7/koth create <name>"));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fYou need to specify a name in order to create it."));
+                    sender.sendMessage(StringUtilities.color("&fCorrect Usage: &7/koth create <name>"));
                     return true;
                 }
 
                 String name = args[1];
                 Optional<Game> gameOptional = gameManager.getGameFromName(name);
                 if (gameOptional.isPresent()) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fA game with the name &c" + name + "&f already exists."));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fA game with the name &c" + name + "&f already exists."));
                     return true;
                 }
 
@@ -304,7 +304,7 @@ public class KOTHCommand implements CommandExecutor, TabCompleter {
 
                 File file = new File(folderFile, name + ".json");
                 if (file.exists()) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fThere was an error while creating the game, a file with the same name already exists."));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fThere was an error while creating the game, a file with the same name already exists."));
                     return true;
                 }
                 file.createNewFile();
@@ -312,7 +312,7 @@ public class KOTHCommand implements CommandExecutor, TabCompleter {
                 Game game = new Game(name, file);
                 gameManager.createAndSaveGame(game);
 
-                sender.sendMessage(Utilities.color(
+                sender.sendMessage(StringUtilities.color(
                         String.format("&2✔ &a&lKOTH &r&7❙ &fYou have created a new game named &a%s&f.", game.getName())
                 ));
                 break;
@@ -321,31 +321,31 @@ public class KOTHCommand implements CommandExecutor, TabCompleter {
             case "delete":
             case "del": {
                 if (!sender.hasPermission("koth.delete")) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fYou don't have enough permissions to use this command."));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fYou don't have enough permissions to use this command."));
                     return true;
                 }
                 if (args.length < 2) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fYou need to specify a game in order to delete it."));
-                    sender.sendMessage(Utilities.color("&fCorrect Usage: &7/koth delete <name>"));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fYou need to specify a game in order to delete it."));
+                    sender.sendMessage(StringUtilities.color("&fCorrect Usage: &7/koth delete <name>"));
                     return true;
                 }
 
                 String name = args[1];
                 Optional<Game> gameOptional = gameManager.getGameFromName(name);
                 if (!gameOptional.isPresent()) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fCouldn't find game with the name &c" + name + "&f."));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fCouldn't find game with the name &c" + name + "&f."));
                     return true;
                 }
 
                 Game game = gameOptional.get();
                 if (game.getState() == State.IN_GAME || game.getState() == State.ENDING) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fYou can't delete a game in progress."));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fYou can't delete a game in progress."));
                     return true;
                 }
 
                 gameManager.deleteGame(game);
 
-                sender.sendMessage(Utilities.color(
+                sender.sendMessage(StringUtilities.color(
                         String.format("&2✔ &a&lKOTH &r&7❙ &fYou have deleted the game named &a%s&f.", game.getName())
                 ));
                 break;
@@ -353,31 +353,31 @@ public class KOTHCommand implements CommandExecutor, TabCompleter {
             case "cancel":
             case "cancel_schedule": {
                 if (!sender.hasPermission("koth.cancel")) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fYou don't have enough permissions to use this command."));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fYou don't have enough permissions to use this command."));
                     return true;
                 }
                 if (args.length < 2) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fYou need to specify a game in order to cancel it."));
-                    sender.sendMessage(Utilities.color("&fCorrect Usage: &7/koth cancel <name>"));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fYou need to specify a game in order to cancel it."));
+                    sender.sendMessage(StringUtilities.color("&fCorrect Usage: &7/koth cancel <name>"));
                     return true;
                 }
 
                 String name = args[1];
                 Optional<Game> gameOptional = gameManager.getGameFromName(name);
                 if (!gameOptional.isPresent()) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fCouldn't find game with the name &c" + name + "&f."));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fCouldn't find game with the name &c" + name + "&f."));
                     return true;
                 }
 
                 Game game = gameOptional.get();
                 if (game.getState() == State.IN_GAME || game.getState() == State.ENDING) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fYou can't cancel a game in progress."));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fYou can't cancel a game in progress."));
                     return true;
                 }
 
                 game.setDateOfNextStart(null);
 
-                sender.sendMessage(Utilities.color(
+                sender.sendMessage(StringUtilities.color(
                         String.format("&2✔ &a&lKOTH &r&7❙ &fYou have cancelled the game named &a%s&f.", game.getName())
                 ));
                 break;
@@ -385,55 +385,55 @@ public class KOTHCommand implements CommandExecutor, TabCompleter {
             case "stop":
             case "stop_game": {
                 if (!sender.hasPermission("koth.stop")) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fYou don't have enough permissions to use this command."));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fYou don't have enough permissions to use this command."));
                     return true;
                 }
                 if (args.length < 2) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fYou need to specify a game in order to stop it."));
-                    sender.sendMessage(Utilities.color("&fCorrect Usage: &7/koth stop <name>"));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fYou need to specify a game in order to stop it."));
+                    sender.sendMessage(StringUtilities.color("&fCorrect Usage: &7/koth stop <name>"));
                     return true;
                 }
 
                 String name = args[1];
                 Optional<Game> gameOptional = gameManager.getGameFromName(name);
                 if (!gameOptional.isPresent()) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fCouldn't find game with the name &c" + name + "&f."));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fCouldn't find game with the name &c" + name + "&f."));
                     return true;
                 }
 
                 Game game = gameOptional.get();
                 if (game.getState() != State.IN_GAME && game.getState() != State.ENDING) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fYou can't stop a game that hasn't started."));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fYou can't stop a game that hasn't started."));
                     return true;
                 }
 
                 game.getAreaRunnable().cancel();
                 game.getGameRunnable().setStartedCounter(false);
                 game.setDateOfNextStart(null);
-                game.getPlayersCapturing().clear();
+                game.getPlayerPoints().clear();
                 game.setState(State.STARTING);
 
-                sender.sendMessage(Utilities.color(
+                sender.sendMessage(StringUtilities.color(
                         String.format("&2✔ &a&lKOTH &r&7❙ &fYou have stopped the game named &a%s&f.", game.getName())
                 ));
                 break;
             }
             case "edit": {
                 if (!sender.hasPermission("koth.edit")) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fYou don't have enough permissions to use this command."));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fYou don't have enough permissions to use this command."));
                     return true;
                 }
 
                 if (args.length < 3) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fYou need to specify a game in order to edit it."));
-                    sender.sendMessage(Utilities.color("&fCorrect Usage: &7/koth edit <name> <world/rewards/capture_zone/global_zone/duration>"));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fYou need to specify a game in order to edit it."));
+                    sender.sendMessage(StringUtilities.color("&fCorrect Usage: &7/koth edit <name> <world/rewards/capture_zone/global_zone/duration>"));
                     return true;
                 }
 
                 String name = args[1];
                 Optional<Game> gameOptional = gameManager.getGameFromName(name);
                 if (!gameOptional.isPresent()) {
-                    sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fCouldn't find game with the name &c" + name + "&f."));
+                    sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fCouldn't find game with the name &c" + name + "&f."));
                     return true;
                 }
 
@@ -455,8 +455,8 @@ public class KOTHCommand implements CommandExecutor, TabCompleter {
                     case "min_rewards":
                     case "minimum_rewards": {
                         if (args.length < 4) {
-                            sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fYou need to specify the minimum rewards to edit it"));
-                            sender.sendMessage(Utilities.color("&fCorrect Usage: &7/koth edit minimum_rewards <amount>"));
+                            sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fYou need to specify the minimum rewards to edit it"));
+                            sender.sendMessage(StringUtilities.color("&fCorrect Usage: &7/koth edit minimum_rewards <amount>"));
                             return true;
                         }
 
@@ -464,7 +464,7 @@ public class KOTHCommand implements CommandExecutor, TabCompleter {
                             int amount = Integer.parseInt(args[3]);
 
                             game.setMinRewards(amount);
-                            sender.sendMessage(Utilities.color(
+                            sender.sendMessage(StringUtilities.color(
                                     String.format(
                                             "&2✔ &a&lKOTH &r&7❙ &fYou have changed &a%s &fminimum rewards to &a%d&f.",
                                             game.getName(),
@@ -472,7 +472,7 @@ public class KOTHCommand implements CommandExecutor, TabCompleter {
                                     )
                             ));
                         } catch (NumberFormatException e) {
-                            sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fInvalid number: &c" + args[3] + "&f."));
+                            sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fInvalid number: &c" + args[3] + "&f."));
                             return true;
                         }
                         break;
@@ -483,8 +483,8 @@ public class KOTHCommand implements CommandExecutor, TabCompleter {
                     case "max_rewards":
                     case "maximum_rewards": {
                         if (args.length < 4) {
-                            sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fYou need to specify the maximum rewards to edit it"));
-                            sender.sendMessage(Utilities.color("&fCorrect Usage: &7/koth edit maximum_rewards <amount>"));
+                            sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fYou need to specify the maximum rewards to edit it"));
+                            sender.sendMessage(StringUtilities.color("&fCorrect Usage: &7/koth edit maximum_rewards <amount>"));
                             return true;
                         }
 
@@ -492,7 +492,7 @@ public class KOTHCommand implements CommandExecutor, TabCompleter {
                             int amount = Integer.parseInt(args[3]);
 
                             game.setMaxRewards(amount);
-                            sender.sendMessage(Utilities.color(
+                            sender.sendMessage(StringUtilities.color(
                                     String.format(
                                             "&2✔ &a&lKOTH &r&7❙ &fYou have changed &a%s &fmaximum rewards to &a%d&f.",
                                             game.getName(),
@@ -500,28 +500,28 @@ public class KOTHCommand implements CommandExecutor, TabCompleter {
                                     )
                             ));
                         } catch (NumberFormatException e) {
-                            sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fInvalid number: &c" + args[3] + "&f."));
+                            sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fInvalid number: &c" + args[3] + "&f."));
                             return true;
                         }
                         break;
                     }
                     case "world": {
                         if (args.length < 4) {
-                            sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fYou need to specify a world to edit it"));
-                            sender.sendMessage(Utilities.color("&fValid Worlds: &c" + Bukkit.getWorlds().stream().map(World::getName).collect(Collectors.joining("&f, &c"))));
+                            sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fYou need to specify a world to edit it"));
+                            sender.sendMessage(StringUtilities.color("&fValid Worlds: &c" + Bukkit.getWorlds().stream().map(World::getName).collect(Collectors.joining("&f, &c"))));
                             return true;
                         }
 
                         String worldName = args[3];
                         World world = Bukkit.getWorld(worldName);
                         if (world == null) {
-                            sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fThe world &c" + worldName + " &f doesn't exists"));
-                            sender.sendMessage(Utilities.color("fExamples: &cworld&f, &cgame_world&f, koth_world"));
+                            sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fThe world &c" + worldName + " &f doesn't exists"));
+                            sender.sendMessage(StringUtilities.color("fExamples: &cworld&f, &cgame_world&f, koth_world"));
                             return true;
                         }
 
                         game.setWorldName(world.getName());
-                        sender.sendMessage(Utilities.color(
+                        sender.sendMessage(StringUtilities.color(
                                 String.format(
                                         "&2✔ &a&lKOTH &r&7❙ &fYou have changed &a%s &fworld to &a%s.",
                                         game.getName(),
@@ -535,15 +535,15 @@ public class KOTHCommand implements CommandExecutor, TabCompleter {
                     case "seconds":
                     case "duration": {
                         if (args.length < 4) {
-                            sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fYou need to specify the duration to edit it"));
-                            sender.sendMessage(Utilities.color("&fCorrect Usage: &7/koth edit duration <seconds>"));
+                            sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fYou need to specify the duration to edit it"));
+                            sender.sendMessage(StringUtilities.color("&fCorrect Usage: &7/koth edit duration <seconds>"));
                             return true;
                         }
                         try {
                             long seconds = Long.parseLong(args[3]);
 
-                            game.setGameSeconds(seconds);
-                            sender.sendMessage(Utilities.color(
+                            game.setGameDuration(seconds);
+                            sender.sendMessage(StringUtilities.color(
                                     String.format(
                                             "&2✔ &a&lKOTH &r&7❙ &fYou have changed &a%s &fduration to &a%d&f.",
                                             game.getName(),
@@ -551,7 +551,7 @@ public class KOTHCommand implements CommandExecutor, TabCompleter {
                                     )
                             ));
                         } catch (NumberFormatException e) {
-                            sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fInvalid number: &c" + args[3] + "&f."));
+                            sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fInvalid number: &c" + args[3] + "&f."));
                             return true;
                         }
                         break;
@@ -563,8 +563,8 @@ public class KOTHCommand implements CommandExecutor, TabCompleter {
                         if (isNotPlayer(sender)) return true;
 
                         if (args.length < 4) {
-                            sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fYou need to specify what point of the area you will edit"));
-                            sender.sendMessage(Utilities.color("&fCorrect Usage: &7/koth edit capture_zone <minimum/maximum)"));
+                            sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fYou need to specify what point of the area you will edit"));
+                            sender.sendMessage(StringUtilities.color("&fCorrect Usage: &7/koth edit capture_zone <minimum/maximum)"));
                             return true;
                         }
 
@@ -574,7 +574,7 @@ public class KOTHCommand implements CommandExecutor, TabCompleter {
 
                         game.setCaptureZoneBoundingBox(boundingBox);
 
-                        sender.sendMessage(Utilities.color("&2✔ &a&lKOTH &r&7❙ &fYou have modified &a" + game.getName() + " &fcapture zone&f."));
+                        sender.sendMessage(StringUtilities.color("&2✔ &a&lKOTH &r&7❙ &fYou have modified &a" + game.getName() + " &fcapture zone&f."));
                         break;
                     }
                     case "global":
@@ -584,8 +584,8 @@ public class KOTHCommand implements CommandExecutor, TabCompleter {
                         if (isNotPlayer(sender)) return true;
 
                         if (args.length < 4) {
-                            sender.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fYou need to specify what point of the area you will edit"));
-                            sender.sendMessage(Utilities.color("&fCorrect Usage: &7/koth edit global_zone <minimum/maximum)"));
+                            sender.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fYou need to specify what point of the area you will edit"));
+                            sender.sendMessage(StringUtilities.color("&fCorrect Usage: &7/koth edit global_zone <minimum/maximum)"));
                             return true;
                         }
 
@@ -595,12 +595,12 @@ public class KOTHCommand implements CommandExecutor, TabCompleter {
 
                         game.setGlobalBoundingBox(boundingBox);
 
-                        sender.sendMessage(Utilities.color("&2✔ &a&lKOTH &r&7❙ &fYou have modified &a" + game.getName() + " &fglobal zone&f."));
+                        sender.sendMessage(StringUtilities.color("&2✔ &a&lKOTH &r&7❙ &fYou have modified &a" + game.getName() + " &fglobal zone&f."));
                         break;
                     }
                     default: {
-                        sender.sendMessage(Utilities.color("&fCorrect Usage: &7/koth edit <name> <world/rewards/capture_zone/global_zone/duration>"));
-                        break;
+                        sender.sendMessage(StringUtilities.color("&fCorrect Usage: &7/koth edit <name> <world/rewards/capture_zone/global_zone/duration>"));
+                        return true;
                     }
                 }
 
@@ -615,42 +615,42 @@ public class KOTHCommand implements CommandExecutor, TabCompleter {
     }
 
     private void sendHelpMessage(CommandSender sender) {
-        sender.sendMessage(Utilities.color("&c&lKOTH &r&7❙ &fCommands:"));
+        sender.sendMessage(StringUtilities.color("&c&lKOTH &r&7❙ &fCommands:"));
         sender.sendMessage(" ");
-        sender.sendMessage(Utilities.color("&c/&fkoth list &7- Shows the scheduled games"));
+        sender.sendMessage(StringUtilities.color("&c/&fkoth list &7- Shows the scheduled games"));
         if (sender.hasPermission("koth.info")) {
-            sender.sendMessage(Utilities.color("&c/&fkoth info <name> &7- Show the information of a game"));
+            sender.sendMessage(StringUtilities.color("&c/&fkoth info <name> &7- Show the information of a game"));
         }
 
         if (sender.hasPermission("koth.schedule")) {
-            sender.sendMessage(Utilities.color("&c/&fkoth schedule <name> <time> (-add) &7- Schedule a game to run"));
+            sender.sendMessage(StringUtilities.color("&c/&fkoth schedule <name> <time> (-add) &7- Schedule a game to run"));
         }
 
         if (sender.hasPermission("koth.cancel")) {
-            sender.sendMessage(Utilities.color("&c/&fkoth cancel <name> &7- Cancels the schedule of a yet to start game"));
+            sender.sendMessage(StringUtilities.color("&c/&fkoth cancel <name> &7- Cancels the schedule of a yet to start game"));
         }
 
         if (sender.hasPermission("koth.stop")) {
-            sender.sendMessage(Utilities.color("&c/&fkoth stop <name> &7- Stops an started game"));
+            sender.sendMessage(StringUtilities.color("&c/&fkoth stop <name> &7- Stops an started game"));
         }
 
         if (sender.hasPermission("koth.create")) {
-            sender.sendMessage(Utilities.color("&c/&fkoth create <name> &7- Creates a new game"));
+            sender.sendMessage(StringUtilities.color("&c/&fkoth create <name> &7- Creates a new game"));
         }
 
         if (sender.hasPermission("koth.delete")) {
-            sender.sendMessage(Utilities.color("&c/&fkoth delete <name> &7- Deletes a game"));
+            sender.sendMessage(StringUtilities.color("&c/&fkoth delete <name> &7- Deletes a game"));
         }
 
         if (sender.hasPermission("koth.edit")) {
-            sender.sendMessage(Utilities.color("&c/&fkoth edit <name> <world/rewards/capture_zone/global_zone/duration> &7 - Edit the specified game"));
+            sender.sendMessage(StringUtilities.color("&c/&fkoth edit <name> <world/rewards/capture_zone/global_zone/duration> &7 - Edit the specified game"));
         }
     }
 
     private boolean isNotPlayer(CommandSender sender) {
         if (sender instanceof Player) return false;
 
-        sender.sendMessage(Utilities.color("&cYou need to be a player in order to execute this command"));
+        sender.sendMessage(StringUtilities.color("&cYou need to be a player in order to execute this command"));
         return true;
     }
 
@@ -666,7 +666,7 @@ public class KOTHCommand implements CommandExecutor, TabCompleter {
                 maximum = true;
                 break;
             default: {
-                player.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fInvalid point: &c" + arguments[3] + "&f."));
+                player.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fInvalid point: &c" + arguments[3] + "&f."));
                 return null;
             }
         }

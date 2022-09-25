@@ -9,8 +9,7 @@ public class MenuListener implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        if (event.getClickedInventory() != null &&
-                event.getClickedInventory().getHolder() instanceof Menu) {
+        if (event.getClickedInventory() != null && event.getClickedInventory().getHolder() instanceof Menu) {
             event.setCancelled(true);
             Menu menu = (Menu) event.getClickedInventory().getHolder();
 

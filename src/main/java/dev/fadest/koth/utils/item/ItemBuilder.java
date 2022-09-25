@@ -1,6 +1,6 @@
 package dev.fadest.koth.utils.item;
 
-import dev.fadest.koth.utils.Utilities;
+import dev.fadest.koth.utils.StringUtilities;
 import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Singular;
@@ -63,16 +63,16 @@ public class ItemBuilder {
         }
 
         if (name != null) {
-            stackMeta.setDisplayName(Utilities.color(name));
+            stackMeta.setDisplayName(StringUtilities.color(name));
         }
 
         if (description != null && !description.isEmpty()) {
             if (description.size() == 1) {
                 String[] split = description.get(0).split("\n");
 
-                stackMeta.setLore(Arrays.stream(split).map(s -> Utilities.color("&r" + s)).collect(Collectors.toList()));
+                stackMeta.setLore(Arrays.stream(split).map(s -> StringUtilities.color("&r" + s)).collect(Collectors.toList()));
             } else {
-                stackMeta.setLore(description.stream().map(s -> Utilities.color("&r" + s)).collect(Collectors.toList()));
+                stackMeta.setLore(description.stream().map(s -> StringUtilities.color("&r" + s)).collect(Collectors.toList()));
             }
         }
 

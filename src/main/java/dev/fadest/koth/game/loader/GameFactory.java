@@ -95,7 +95,6 @@ public class GameFactory {
 
     /**
      * Save a {@link Game} to a file.
-     * <p>
      *
      * @param game The game to save
      */

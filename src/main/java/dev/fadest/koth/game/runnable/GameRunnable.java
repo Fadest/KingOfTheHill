@@ -3,7 +3,7 @@ package dev.fadest.koth.game.runnable;
 import dev.fadest.koth.game.Game;
 import dev.fadest.koth.game.state.State;
 import dev.fadest.koth.utils.BoundingBox;
-import dev.fadest.koth.utils.Utilities;
+import dev.fadest.koth.utils.StringUtilities;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -78,21 +78,21 @@ public class GameRunnable extends BukkitRunnable {
         BoundingBox boundingBox = game.getGlobalBoundingBox();
 
         if (BROADCAST_SECONDS.contains(timeRemaining)) {
-            Bukkit.broadcastMessage(Utilities.color(
+            Bukkit.broadcastMessage(StringUtilities.color(
                             String.format("&6ℹ &6&lKOTH &r&7❙ &fThe game &6%s &flocated at &6X: &f%.2f &6Y: &f%.2f &6Z: " +
                                             "&f%.2f will start in &6%s",
                                     game.getName(),
                                     boundingBox.getMinX(),
                                     boundingBox.getMinY(),
                                     boundingBox.getMinZ(),
-                                    Utilities.formatRemainingTime(TimeUnit.SECONDS.toMillis(timeRemaining))
+                                    StringUtilities.formatRemainingTime(TimeUnit.SECONDS.toMillis(timeRemaining))
                             )
                     )
             );
         }
         if (timeRemaining <= 10) {
             if (timeRemaining > 0) {
-                Bukkit.broadcastMessage(Utilities.color(String.format("&fThe game &a%s &fwill start in &a%s", game.getName(), Utilities.formatRemainingTime(TimeUnit.SECONDS.toMillis(timeRemaining)))));
+                Bukkit.broadcastMessage(StringUtilities.color(String.format("&fThe game &a%s &fwill start in &a%s", game.getName(), StringUtilities.formatRemainingTime(TimeUnit.SECONDS.toMillis(timeRemaining)))));
             }
 
             if (timeRemaining <= 0) {
@@ -105,7 +105,7 @@ public class GameRunnable extends BukkitRunnable {
 
     private void gameTick() {
         if (!startedCounter) {
-            countdown.set(game.getGameSeconds() + 1);
+            countdown.set(game.getGameDuration() + 1);
             startedCounter = true;
         }
 

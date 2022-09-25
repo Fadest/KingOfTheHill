@@ -7,7 +7,7 @@ import dev.fadest.koth.game.reward.Reward;
 import dev.fadest.koth.game.reward.RewardType;
 import dev.fadest.koth.menu.Menu;
 import dev.fadest.koth.utils.FormatItem;
-import dev.fadest.koth.utils.Utilities;
+import dev.fadest.koth.utils.StringUtilities;
 import dev.fadest.koth.utils.item.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.conversations.ConversationContext;
@@ -61,39 +61,39 @@ public class RewardEditMenu extends Menu {
     }
 
     @Override
-    public void click(Player player, int slot, ClickType clickType) {
+    public void click(@NotNull Player player, int slot, @NotNull ClickType clickType) {
         player.closeInventory();
 
         switch (slot) {
             case 1:
                 startNumberConversation(player, (amount) -> {
                     reward.setMinAmount(amount);
-                    player.sendMessage(Utilities.color("&2✔ &a&lKOTH &r&7❙ &fYou have changed the minimum reward amount to &a" + amount));
+                    player.sendMessage(StringUtilities.color("&2✔ &a&lKOTH &r&7❙ &fYou have changed the minimum reward amount to &a" + amount));
                 });
                 break;
             case 3:
                 startNumberConversation(player, (amount) -> {
                     reward.setMaxAmount(amount);
-                    player.sendMessage(Utilities.color("&2✔ &a&lKOTH &r&7❙ &fYou have changed the maximum reward amount to &a" + amount));
+                    player.sendMessage(StringUtilities.color("&2✔ &a&lKOTH &r&7❙ &fYou have changed the maximum reward amount to &a" + amount));
                 });
                 break;
             case 6:
                 startFloatConversation(player, (chance) -> {
                     reward.setChance(chance);
-                    player.sendMessage(Utilities.color("&2✔ &a&lKOTH &r&7❙ &fYou have changed the chances to &a" + chance));
+                    player.sendMessage(StringUtilities.color("&2✔ &a&lKOTH &r&7❙ &fYou have changed the chances to &a" + chance));
                 });
                 break;
             case 7:
                 startStringConversation(player, "message", (message) -> {
                     reward.setMessage(message);
-                    player.sendMessage(Utilities.color("&2✔ &a&lKOTH &r&7❙ &fYou have changed the message to &f" + message));
+                    player.sendMessage(StringUtilities.color("&2✔ &a&lKOTH &r&7❙ &fYou have changed the message to &f" + message));
                 });
                 break;
             case 13:
                 if (reward.getRewardType() == RewardType.COMMAND) {
                     startStringConversation(player, "command", (string) -> {
                         reward.setCommand(string);
-                        player.sendMessage(Utilities.color("&2✔ &a&lKOTH &r&7❙ &fYou have changed the command to &f/" + string));
+                        player.sendMessage(StringUtilities.color("&2✔ &a&lKOTH &r&7❙ &fYou have changed the command to &f/" + string));
                     });
                 } else {
                     startEditItemConversation(player);
@@ -122,7 +122,7 @@ public class RewardEditMenu extends Menu {
 
                     @Override
                     protected String getFailedValidationText(ConversationContext context, String invalidInput) {
-                        return Utilities.color("&c" + invalidInput + " &f is not a number");
+                        return StringUtilities.color("&c" + invalidInput + " &f is not a number");
                     }
 
                     @Override
@@ -134,7 +134,7 @@ public class RewardEditMenu extends Menu {
                     @Override
                     @NotNull
                     public String getPromptText(@NotNull ConversationContext conversationContext) {
-                        return Utilities.color("&eInput the new amount\n&c&lOR &r&7Type &cCANCEL &7to cancel or wait &c10 &7seconds");
+                        return StringUtilities.color("&eInput the new amount\n&c&lOR &r&7Type &cCANCEL &7to cancel or wait &c10 &7seconds");
                     }
                 }).addConversationAbandonedListener(conversationEvent -> {
                     if (!conversationEvent.gracefulExit()) return;
@@ -166,7 +166,7 @@ public class RewardEditMenu extends Menu {
 
                     @Override
                     protected String getFailedValidationText(ConversationContext context, String invalidInput) {
-                        return Utilities.color("&c" + invalidInput + " &f is not a number");
+                        return StringUtilities.color("&c" + invalidInput + " &f is not a number");
                     }
 
                     @Override
@@ -178,7 +178,7 @@ public class RewardEditMenu extends Menu {
                     @Override
                     @NotNull
                     public String getPromptText(@NotNull ConversationContext conversationContext) {
-                        return Utilities.color("&eInput the new chance\n&c&lOR &r&7Type &cCANCEL &7to cancel or wait &c10 &7seconds");
+                        return StringUtilities.color("&eInput the new chance\n&c&lOR &r&7Type &cCANCEL &7to cancel or wait &c10 &7seconds");
                     }
                 }).addConversationAbandonedListener(conversationEvent -> {
                     if (!conversationEvent.gracefulExit()) return;
@@ -212,7 +212,7 @@ public class RewardEditMenu extends Menu {
                     @Override
                     @NotNull
                     public String getPromptText(@NotNull ConversationContext conversationContext) {
-                        return Utilities.color("&eInput the new " + promptText + "\n&c&lOR &r&7Type &cCANCEL &7to cancel or wait &c10 &7seconds");
+                        return StringUtilities.color("&eInput the new " + promptText + "\n&c&lOR &r&7Type &cCANCEL &7to cancel or wait &c10 &7seconds");
                     }
                 }).addConversationAbandonedListener(conversationEvent -> {
                     if (!conversationEvent.gracefulExit()) return;
@@ -246,18 +246,18 @@ public class RewardEditMenu extends Menu {
                     @Override
                     @NotNull
                     public String getPromptText(@NotNull ConversationContext conversationContext) {
-                        return Utilities.color("&eSelect the new item in your hotbar, then type something in chat to confirm.\n&c&lOR &r&7Type &cCANCEL &7to cancel or wait &c10 &7seconds");
+                        return StringUtilities.color("&eSelect the new item in your hotbar, then type something in chat to confirm.\n&c&lOR &r&7Type &cCANCEL &7to cancel or wait &c10 &7seconds");
                     }
                 }).addConversationAbandonedListener(conversationEvent -> {
                     if (!conversationEvent.gracefulExit() || player.getItemInHand() == null || player.getItemInHand().getType() == Material.AIR) {
-                        player.sendMessage(Utilities.color("&4✕ &c&lKOTH &r&7❙ &fYou didn't select a new item."));
+                        player.sendMessage(StringUtilities.color("&4✕ &c&lKOTH &r&7❙ &fYou didn't select a new item."));
                         return;
                     }
                     ItemStack itemStack = player.getItemInHand().clone();
                     itemStack.setAmount(1);
                     reward.setItemStack(itemStack);
 
-                    player.sendMessage(Utilities.color("&2✔ &a&lKOTH &r&7❙ &fYou have updated the reward item"));
+                    player.sendMessage(StringUtilities.color("&2✔ &a&lKOTH &r&7❙ &fYou have updated the reward item"));
 
                     GameFactory.saveFile(game);
 

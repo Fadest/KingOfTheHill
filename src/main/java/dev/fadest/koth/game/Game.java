@@ -6,9 +6,10 @@ import dev.fadest.koth.game.reward.Reward;
 import dev.fadest.koth.game.reward.RewardType;
 import dev.fadest.koth.game.runnable.GameRunnable;
 import dev.fadest.koth.game.state.State;
+import dev.fadest.koth.game.state.StateLogic;
 import dev.fadest.koth.utils.BoundingBox;
 import dev.fadest.koth.utils.RandomPick;
-import dev.fadest.koth.utils.Utilities;
+import dev.fadest.koth.utils.StringUtilities;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
@@ -17,6 +18,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.io.File;
 import java.time.LocalDateTime;
@@ -29,62 +31,46 @@ public class Game {
 
     private final static Random RANDOM = ThreadLocalRandom.current();
 
-    private transient Map<UUID, Long> playersCapturing = new HashMap<>();
+    private transient Map<UUID, Long> playerPoints = new HashMap<>();
     private transient State state = State.PREPARING;
     private transient LocalDateTime dateOfNextStart;
     private transient AreaRunnable areaRunnable;
     private transient GameRunnable gameRunnable;
     private transient String gameFileName;
     private String name, worldName;
-    private BoundingBox captureZoneBoundingBox;
-    private BoundingBox globalBoundingBox;
-    private long gameSeconds;
-    private int minRewards = 1;
-    private int maxRewards = 1;
+    private BoundingBox captureZoneBoundingBox, globalBoundingBox;
+    private long gameDuration;
+    private int minRewards = 1, maxRewards = 1;
     private List<Reward> rewards = new ArrayList<>();
 
-    public Game(String name, File gameFile) {
+    public Game(@NotNull String name, @NotNull File gameFile) {
         this.name = name;
         this.gameFileName = gameFile.getName();
+
+        init();
     }
 
+    /**
+     * Inits this Game, setting up the {@link State} AND {@link GameRunnable} instances
+     */
     public void init() {
         this.state = State.PREPARING;
         this.gameRunnable = new GameRunnable(this);
         gameRunnable.runTaskTimerAsynchronously(KOTHPlugin.getInstance(), 20L, 20L);
     }
 
-    public World getWorld() {
-        return Bukkit.getWorld(worldName);
-    }
-
-    public void setState(@NotNull State state) {
-        this.state = state;
-
-        Bukkit.getScheduler().runTask(KOTHPlugin.getInstance(), () -> state.getStateLogic().doLogic(this));
-    }
-    //TODO IMPLEMENT DOCUMENTATION
-
-    /**
-     * Gets the winning pplayer
-     */
-    public Optional<Map.Entry<UUID, Long>> getWinningPlayerUniqueId() {
-        return getPlayersCapturing().entrySet().stream()
-                .filter(entry -> Objects.nonNull(Bukkit.getPlayer(entry.getKey())))
-                .max(Comparator.comparingLong(Map.Entry::getValue));
-    }
-
     /**
      * Selects a random reward and then give it to the {@param player}
      * This method will loop through itself until a reward is found is none was present
      *
-     * @param player The player that will receive a Reward
+     * @param player        The player that will receive a Reward
+     * @param randomRewards The random pick instance with loaded rewards
      */
-    public void giveReward(@NotNull Player player) {
-        Optional<Reward> rewardOptional = getRandomReward();
+    private void giveReward(@NotNull Player player, @NotNull RandomPick<Reward> randomRewards) {
+        Optional<Reward> rewardOptional = getRandomReward(randomRewards);
         if (!rewardOptional.isPresent()) {
-            //Loop until we find a reward
-            giveReward(player);
+            // Loop until we find a reward
+            giveReward(player, randomRewards);
             return;
         }
 
@@ -110,7 +96,7 @@ public class Game {
 
             final String rewardMessage = reward.getMessage();
             if (rewardMessage != null) {
-                player.sendMessage(Utilities.color(rewardMessage
+                player.sendMessage(StringUtilities.color(rewardMessage
                         .replace("%amount%", Integer.toString(amount))
                         .replace("%player%", player.getName())
                 ));
@@ -127,28 +113,89 @@ public class Game {
     }
 
     /**
-     * Gets a random reward from the list of rewards
+     * Selects a random reward and then give it to the {@param player}
+     * This method will loop through itself until a reward is found is none was present
+     * <p>
+     * It will also create a new {@link RandomPick} instance based on the rewards of this game and pass it
+     * to the {@link Game#giveReward(Player, RandomPick)) method
+     * <p>
      *
-     * @return An {@link Optional} of {@link Reward}
+     * @param player The player that will receive a Reward
      */
-    public Optional<Reward> getRandomReward() {
-        final RandomPick<Reward> randomRewards = new RandomPick<>();
+    public void giveReward(@NotNull Player player) {
+        RandomPick<Reward> randomRewards = new RandomPick<>();
         for (Reward reward : rewards) {
             randomRewards.add(reward.getChance(), reward);
         }
 
+        this.giveReward(player, randomRewards);
+    }
+
+    /**
+     * Gets a random reward from the list of rewards
+     *
+     * @return An {@link Optional} of {@link Reward}
+     */
+    public Optional<Reward> getRandomReward(@NotNull RandomPick<Reward> randomRewards) {
         return Optional.ofNullable(randomRewards.next());
     }
 
+    /**
+     * Gets a built File using the gameFileName field and in the games folder
+     *
+     * @return The file that matches this Game in configuration
+     */
     public File getGameFile() {
         return new File(KOTHPlugin.getInstance().getDataFolder() + File.separator + "games", gameFileName);
     }
 
-    public Map<UUID, Long> getPlayersCapturing() {
-        // We have to declare a new instance, because transient fields go back to their default state, null in the case of Map
-        if (this.playersCapturing == null) {
-            this.playersCapturing = new HashMap<>();
+    /**
+     * Gets the World loaded by Bukkit
+     *
+     * @return An instance of the {@link World} used by this game
+     */
+    @UnknownNullability
+    public World getWorld() {
+        if (this.worldName == null) return null;
+
+        return Bukkit.getWorld(worldName);
+    }
+
+    /**
+     * Sets the game state to the provided one and execute its logic
+     * Using this method will use the logic from {@link StateLogic#doLogic(Game)}
+     *
+     * @param state the new state of this Game
+     */
+    public void setState(@NotNull State state) {
+        this.state = state;
+
+        Bukkit.getScheduler().runTask(KOTHPlugin.getInstance(), () -> state.getStateLogic().doLogic(this));
+    }
+
+    /**
+     * Gets the player that have points in the game
+     * <p>
+     * Using this method will check if the playerPoints field is not null, and it is, it'll create a new instance of it
+     * GSON doesn't use the default value of transients value, and therefore it will be null by default
+     *
+     * @return A map with players {@link UUID}s and their points
+     */
+    public Map<UUID, Long> getPlayerPoints() {
+        if (this.playerPoints == null) {
+            this.playerPoints = new HashMap<>();
         }
-        return playersCapturing;
+        return playerPoints;
+    }
+
+    /**
+     * Selects the player who has more points in this game
+     *
+     * @return An {@link Optional} containing an entry of the player {@link UUID} and points
+     */
+    public Optional<Map.Entry<UUID, Long>> getPlayerWithMostPoints() {
+        return getPlayerPoints().entrySet().stream()
+                .filter(entry -> Objects.nonNull(Bukkit.getPlayer(entry.getKey())))
+                .max(Comparator.comparingLong(Map.Entry::getValue));
     }
 }

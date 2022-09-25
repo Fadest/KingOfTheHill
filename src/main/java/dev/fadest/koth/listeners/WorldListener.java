@@ -34,10 +34,6 @@ public class WorldListener implements Listener {
         }
     }
 
-    private boolean locationIsInsideAGame(Location location) {
-        return plugin.getGameManager().getGameAtLocation(location).isPresent();
-    }
-
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         if (event.getPlayer().hasPermission("koth.drop.bypass")) return;
@@ -45,6 +41,10 @@ public class WorldListener implements Listener {
         if (!locationIsInsideAGame(event.getPlayer().getLocation())) return;
 
         event.setCancelled(true);
+    }
+
+    private boolean locationIsInsideAGame(Location location) {
+        return plugin.getGameManager().getGameAtLocation(location).isPresent();
     }
 
 }

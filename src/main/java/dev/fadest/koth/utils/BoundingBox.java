@@ -53,9 +53,9 @@ public class BoundingBox implements Cloneable, ConfigurationSerializable {
     }
 
     /**
-     * Creates a empty bounding
+     * Creates an empty bounding box
      *
-     * @return the bounding box
+     * @return an empty bounding box
      */
     @NotNull
     public static BoundingBox empty() {

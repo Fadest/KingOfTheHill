@@ -6,13 +6,14 @@ import dev.fadest.koth.game.reward.Reward;
 import dev.fadest.koth.game.reward.RewardType;
 import dev.fadest.koth.menu.Menu;
 import dev.fadest.koth.utils.FormatItem;
-import dev.fadest.koth.utils.Utilities;
+import dev.fadest.koth.utils.StringUtilities;
 import dev.fadest.koth.utils.item.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -79,7 +80,7 @@ public class RewardListMenu extends Menu {
     }
 
     @Override
-    public void click(Player player, int slot, ClickType clickType) {
+    public void click(@NotNull Player player, int slot, @NotNull ClickType clickType) {
         if (getInventory().getItem(slot) == null) return;
 
         switch (slot) {
@@ -96,7 +97,7 @@ public class RewardListMenu extends Menu {
                     new RewardEditMenu(game, reward).open(player);
                 } else if (clickType == ClickType.RIGHT) {
                     game.getRewards().remove(reward);
-                    player.sendMessage(Utilities.color("&2✔ &a&lKOTH &r&7❙ &fYou have deleted a reward"));
+                    player.sendMessage(StringUtilities.color("&2✔ &a&lKOTH &r&7❙ &fYou have deleted a reward"));
                     GameFactory.saveFile(game);
                 }
             }

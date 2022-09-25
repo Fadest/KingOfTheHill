@@ -1,8 +1,9 @@
 name: KOTH
 main: dev.fadest.koth.KOTHPlugin
-description: A simple King of the Hill gamemode
+description: A King of the Hill game mode with many features
 version: 1.0-SNAPSHOT
 author: Fadest
 commands:
   koth:
     description: Main command of the KOTH plugin
+    aliases: [ king, hill, hills, game, games, koths, arena ]

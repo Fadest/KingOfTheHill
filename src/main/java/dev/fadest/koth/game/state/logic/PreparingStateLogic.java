@@ -17,10 +17,8 @@ public class PreparingStateLogic implements StateLogic {
     public void doLogic(@NotNull Game game) {
         Objects.requireNonNull(game, "Game must not be null");
 
-        Optional<Map.Entry<UUID, Long>> optionalWinningPlayer = game.getWinningPlayerUniqueId();
-        if (!optionalWinningPlayer.isPresent()) {
-            return;
-        }
+        Optional<Map.Entry<UUID, Long>> optionalWinningPlayer = game.getPlayerWithMostPoints();
+        if (!optionalWinningPlayer.isPresent()) return;
 
         Map.Entry<UUID, Long> entry = optionalWinningPlayer.get();
 
@@ -29,6 +27,6 @@ public class PreparingStateLogic implements StateLogic {
         for (int i = 0; i < amountOfRewards; i++) {
             game.giveReward(player);
         }
-        game.getPlayersCapturing().clear();
+        game.getPlayerPoints().clear();
     }
 }
