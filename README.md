@@ -6,13 +6,13 @@ located in [this link](https://docs.google.com/document/d/1chJ7oqXzj7a-XgDcMKhHI
 ## Commands
 
 - /koth list » Shows the scheduled games
-- /koth info <name> » Show the information of a game
-- /koth schedule <name> <time> (-add) » Schedule a game
-- /koth cancel <name> » Cancels the schedule of a yet to start game
-- /koth stop <name> » Stops a started game
-- /koth create <name> » Creates a new game
-- /koth delete <name> » Deletes a new game
-- /koth edit <name> <world/rewards/min_rewards/max_rewards/capture_zone/global_zone/duration> » Edit the specified game
+- /koth info [name] » Show the information of a game
+- /koth schedule [name] [time] (-add) » Schedule a game
+- /koth cancel [name] » Cancels the schedule of a yet to start game
+- /koth stop [name] » Stops a started game
+- /koth create [name] » Creates a new game
+- /koth delete [name] » Deletes a new game
+- /koth edit [name] [world/rewards/min_rewards/max_rewards/capture_zone/global_zone/duration] » Edit the specified game
 
 ## Information
 
